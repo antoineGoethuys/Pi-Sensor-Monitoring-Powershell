@@ -14,7 +14,7 @@ def read_gpio_pins():
     GPIO.setmode(GPIO.BCM)
     pin_values = {}
     
-    for pin in range(2, 28):  # GPIO pins range from 2 to 27
+    for pin in range(2, 28)
         GPIO.setup(pin, GPIO.IN)
         pin_values[pin] = GPIO.input(pin)
     

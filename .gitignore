@@ -1,2 +1,5 @@
 .vs/
 Sensor/venv
+Sensor/gpio_data.db
+Database/Sensor.db
+.env

@@ -3,10 +3,91 @@ A system that helps manage and monitor sensors that are connected to Pi's via po
 
 ---
 
+# Project Composition 
+## client/server
+
+## Sensors/api
+
+add schema
+---
+# Setup
+## for setup the client part
+### Prerequisites
+#### PowerShell: 
+  Ensure you have PowerShell installed. You can download it from Microsoft's official site.
+### Installation
+1. Clone the repository:
+```
+git clone https://github.com/antoineGoethuys/Pi-Sensor-Monitoring-Powershell.git
+cd Pi-Sensor-Monitoring-Powershell
+```
+2. Navigate to the project directory:
+```
+cd Pi-Sensor-Monitoring-Powershell
+```
+### Running the PowerShell Scripts
+1. Run the main PowerShell script:
+```
+pwsh main.ps1
+```
+## for setup the pi parts
+### Prerequisites
+#### Python: 
+  Ensure you have Python installed. You can download it from python.org.
+#### Pip: 
+  Ensure you have pip installed. It usually comes with Python.
+
+### Installation
+Connect you to your pi
+1. Clone the repository:
+```
+git clone https://github.com/antoineGoethuys/Pi-Sensor-Monitoring-Powershell.git
+```
+
+2. Navigate to the **Sensor** directory:
+```
+cd Pi-Sensor-Monitoring-Powershell/Sensor
+```
+
+3. Install the required Python packages:
+```
+pip install -r requirements.txt
+```
+### Running
+```
+python api.py
+```
+This will start the FastAPI server on http://0.0.0.0:8000. You can access the endpoints defined in the script.
+
+---
+
+## Functions
+
+
+
+---
+
+## Endpoints api of sensor
+
+Get GPIO status:
+```
+GET /gpio
+```
+Get specific GPIO pin status:
+```
+GET /gpio/{pin}
+```
+Get GPIO pin log:
+```
+GET /gpio/{pin}/log
+```
+
+---
+
 # Project To-Do List
 
 ## Core Tasks
-- [ ] Store sensor data in SQLite database
+- [x] Store sensor data in SQLite database
 - [ ] Develop a real-time monitoring dashboard
 - [ ] Set up notifications for abnormal sensor values
 - [ ] Create configuration pages:
@@ -64,3 +145,4 @@ A system that helps manage and monitor sensors that are connected to Pi's via po
 - official documentation of Microsoft Powershell
 - official documentation of python (sqlite / threading / signal / sys / time)
 - documentation of RPi.GPIO / uvicorn / fastapi
+- [tutorial SQLite Powershell](https://www.youtube.com/watch?v=oIodLO-L24Q)
