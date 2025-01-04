@@ -54,15 +54,17 @@ function Add-Button {
         [System.Windows.Forms.Control]$parentControl,
         [string]$buttonText,
         [int]$buttonLocationX,
-        [int]$buttonLocationY
+        [int]$buttonLocationY,
+        [int]$buttonWidth = 100,
+        [int]$buttonHeight = 30
     )
     $button = New-Object System.Windows.Forms.Button
     $button.Text = $buttonText
     $button.Location = New-Object System.Drawing.Point($buttonLocationX, $buttonLocationY)
+    $button.Size = New-Object System.Drawing.Size($buttonWidth, $buttonHeight)
     $parentControl.Controls.Add($button)
     return $button
 }
-
 function Add-Table {
     param (
         [System.Windows.Forms.Control]$parentControl,
@@ -83,12 +85,19 @@ function Set-Table {
         [System.Windows.Forms.DataGridView]$table,
         [array]$data
     )
+    if ($data.Length -eq 0 -or $data[0].Length -le 1) {
+        Write-Error "Invalid data format for table. Ensure the data array is not empty and has at least two columns."
+        return
+    }
+
     $table.Rows.Clear()
     $table.ColumnCount = $data[0].Length - 1
     for ($i = 1; $i -lt $data.Length; $i++) {
         $row = $table.Rows.Add()
         for ($j = 1; $j -lt $data[$i].Length; $j++) {
-            $table.Rows[$row].Cells[$j - 1].Value = $data[$i][$j]
+            if ($table.Rows[$row].Cells[$j - 1] -ne $null) {
+                $table.Rows[$row].Cells[$j - 1].Value = $data[$i][$j]
+            }
         }
     }
     for ($j = 1; $j -lt $data[0].Length; $j++) {

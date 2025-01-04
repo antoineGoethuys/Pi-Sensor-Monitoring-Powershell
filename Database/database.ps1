@@ -62,5 +62,26 @@ function Get-PiPinSqliteData {
     return $response    
 }
 
+# Dont work
+# function Get-PiPinSqliteDataLastOfOnePin {
+#     param (
+#         [int]$pi,
+#         [int]$pin
+#     )
+#     $query = "SELECT * FROM SENSOR WHERE pi = $pi AND pin = $pin ORDER BY id DESC LIMIT 1"
+#     $response = Invoke-SqliteQuery -Query $query -SQLiteConnection $conn
+#     Write-Output $response
+#     Write-Host $response
+#     return $response
+# }
+
+function Get-PiPinSqliteDataLastOfAllPins {
+    param (
+        [int]$pi
+    )
+    $query = "SELECT * FROM SENSOR WHERE pi = $pi ORDER BY id DESC LIMIT 26"
+    $response = Invoke-SqliteQuery -Query $query -SQLiteConnection $conn
+    return $response
+}
 # test function
 # Add-SensorData -pi 1 -pin 1 -timestamp "2021-01-01 00:00:00" -value_data "10"
