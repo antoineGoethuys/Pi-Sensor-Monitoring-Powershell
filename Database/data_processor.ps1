@@ -1,0 +1,43 @@
+. "$PSScriptRoot/database.ps1"
+
+function Sync-Data {
+    param(
+        [int32]$Pi,
+        [string]$IP,
+        [string]$port
+    )
+    $data = Get-SensorData -IP $IP -port $port
+    # $data.timestamp | Out-GridView
+    # $data.data | Out-GridView
+
+    foreach ($row in $data.data) {
+        foreach ($property in $row.psobject.Properties) {
+            # Write-Output "$($pro perty.Name) = $($property.Value)"
+            Add-SensorData -pi $Pi -pin $property.Name -timestamp $data.timestamp -value_data $property.Value
+            # Add-SensorData -pi $Pi -pin $property.Name -timestamp $data.timestamp -value_data $property.Value
+        }
+    }
+}
+
+function Start-Sync-Data {
+    param(
+        [int32]$Pi,
+        [string]$IP,
+        [string]$port
+    )
+    Clear-Database
+    while ($true) {
+        Sync-Data -Pi $Pi -IP $IP -port $port
+        Start-Sleep -Seconds 5
+    }
+    
+}
+
+
+# test function
+# Get-SensorDataOfPinLog -IP "10.0.0.254" -port "8000" -pin "20"
+# Get-SensorDataOfPinStatus -IP "10.0.0.254" -port "8000" -pin "20"
+# Get-SensorData -IP "10.0.0.254" -port "8000"
+
+# Clear-Database
+# Sync-Data -Pi 1 -IP "10.0.0.254" -port "8000"

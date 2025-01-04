@@ -4,134 +4,129 @@ Add-Type -AssemblyName System.Drawing
 Add-Type -AssemblyName System.Windows.Forms.DataVisualization
 #endregion
 
-#region Form
-#region Create Form
-# Create the form
-$form = New-Object System.Windows.Forms.Form
-$form.Text = "Dashboard"
-$form.Size = New-Object System.Drawing.Size(800, 600)
-$form.FormBorderStyle = [System.Windows.Forms.FormBorderStyle]::FixedDialog
-$form.MaximizeBox = $false
-$form.MinimizeBox = $false
-# $form.WindowState = "Maximized"
-$form.StartPosition = "CenterScreen"
-#endregion
+function Set-Form {
+    param (
+        [string]$formText,
+        [int]$formWidth,
+        [int]$formHeight
+    )
+    $form = New-Object System.Windows.Forms.Form
+    $form.Text = $formText
+    $form.Size = New-Object System.Drawing.Size($formWidth, $formHeight)
+    $form.FormBorderStyle = [System.Windows.Forms.FormBorderStyle]::FixedDialog
+    $form.MaximizeBox = $false
+    $form.MinimizeBox = $false
+    # $form.WindowState = "Maximized"
+    $form.StartPosition = "CenterScreen"
+    $form.AutoScroll = $true
+    return $form
+}
 
-#region Add Toolbar
-# Add a toolbar
-$toolStrip = New-Object System.Windows.Forms.ToolStrip
+function Add-tabPage {
+    param (
+        [System.Windows.Forms.TabControl]$tabControl,
+        [string]$tabText
+    )
+    $tabPage = New-Object System.Windows.Forms.TabPage
+    $tabPage.Text = $tabText
+    $tabPage.AutoScroll = $true
+    $tabControl.TabPages.Add($tabPage)
+    return $tabPage
+}
 
-$toolStripButton1 = New-Object System.Windows.Forms.ToolStripButton
-$toolStripButton1.Text = "Button1"
+function Add-TabControl {
+    param (
+        [System.Windows.Forms.Control]$parentControl,
+        [int]$tabControlWidth,
+        [int]$tabControlHeight,
+        [int]$tabControlLocationX,
+        [int]$tabControlLocationY
+    )
+    $tabControl = New-Object System.Windows.Forms.TabControl
+    $tabControl.Size = New-Object System.Drawing.Size($tabControlWidth, $tabControlHeight)
+    $tabControl.Location = New-Object System.Drawing.Point($tabControlLocationX, $tabControlLocationY)
+    $parentControl.Controls.Add($tabControl)
+    return $tabControl
+}
 
-$toolStrip.Items.Add($toolStripButton1)
-$form.Controls.Add($toolStrip)
-#endregion
+function Add-Button {
+    param (
+        [System.Windows.Forms.Control]$parentControl,
+        [string]$buttonText,
+        [int]$buttonLocationX,
+        [int]$buttonLocationY
+    )
+    $button = New-Object System.Windows.Forms.Button
+    $button.Text = $buttonText
+    $button.Location = New-Object System.Drawing.Point($buttonLocationX, $buttonLocationY)
+    $parentControl.Controls.Add($button)
+    return $button
+}
 
-#region Add Tab Control
-# Add a tab control
-$tabControl = New-Object System.Windows.Forms.TabControl
-$tabControl.Size = New-Object System.Drawing.Size(780, 500)
-$tabControl.Location = New-Object System.Drawing.Point(5, 20)
+function Add-Table {
+    param (
+        [System.Windows.Forms.Control]$parentControl,
+        [int]$tableWidth,
+        [int]$tableHeight,
+        [int]$tableLocationX,
+        [int]$tableLocationY
+    )
+    $table = New-Object System.Windows.Forms.DataGridView
+    $table.Size = New-Object System.Drawing.Size($tableWidth, $tableHeight)
+    $table.Location = New-Object System.Drawing.Point($tableLocationX, $tableLocationY)
+    $parentControl.Controls.Add($table)
+    return $table
+}
 
-$tabPage1 = New-Object System.Windows.Forms.TabPage
-$tabPage1.Text = "Tab1"
-$tabControl.TabPages.Add($tabPage1)
-
-$tabPage2 = New-Object System.Windows.Forms.TabPage
-$tabPage2.Text = "+"
-$tabControl.TabPages.Add($tabPage2)
-
-# Handle the SelectedIndexChanged event to add new tabs
-$tabControl.add_SelectedIndexChanged({
-        if ($tabControl.SelectedTab -eq $tabPage2) {
-            $newTabPage = New-Object System.Windows.Forms.TabPage
-            $newTabPage.Text = "New Tab " + ($tabControl.TabPages.Count)
-            $tabControl.TabPages.Insert($tabControl.TabPages.Count - 1, $newTabPage)
-            $tabControl.SelectedTab = $newTabPage
-            Add-ContextMenuToTab $newTabPage
+function Set-Table {
+    param (
+        [System.Windows.Forms.DataGridView]$table,
+        [array]$data
+    )
+    $table.Rows.Clear()
+    $table.ColumnCount = $data[0].Length - 1
+    for ($i = 1; $i -lt $data.Length; $i++) {
+        $row = $table.Rows.Add()
+        for ($j = 1; $j -lt $data[$i].Length; $j++) {
+            $table.Rows[$row].Cells[$j - 1].Value = $data[$i][$j]
         }
-    })
-
-$form.Controls.Add($tabControl)
-#endregion
-
-#region Add Change Color Button
-# Add a button to change the background color
-$changeColorButton = New-Object System.Windows.Forms.Button
-$changeColorButton.Text = "Change Color"
-$changeColorButton.Location = New-Object System.Drawing.Point(10, 530)
-$changeColorButton.Add_Click({
-        $form.BackColor = [System.Drawing.Color]::LightBlue
-        Update-Form
-    })
-$form.Controls.Add($changeColorButton)
-#endregion
-
-#region Update Form Function
-function Update-Form {
-    [void]$form.Invalidate()
-}
-#endregion
-
-#region Add Context Menu to Tabs
-function Add-ContextMenuToTab {
-    param ($tabPage)
-    
-    $contextMenu = New-Object System.Windows.Forms.ContextMenuStrip
-    $closeMenuItem = New-Object System.Windows.Forms.ToolStripMenuItem
-    $closeMenuItem.Text = "Close"
-    $closeMenuItem.Add_Click({
-            $tabControl.TabPages.Remove($tabPage)
-        })
-    $contextMenu.Items.Add($closeMenuItem)
-    $tabPage.ContextMenuStrip = $contextMenu
-}
-
-#region Change Tab Text Function
-function Set-TabText {
-    param ($tabPage, $newText)
-    $tabPage.Text = $newText
-    Update-Form
-}
-#endregion
-
-#region Add New Button Function
-function Add-NewButton {
-    param ($buttonText, $locationX, $locationY)
-    
-    $newButton = New-Object System.Windows.Forms.Button
-    $newButton.Text = $buttonText
-    $newButton.Location = New-Object System.Drawing.Point($locationX, $locationY)
-    $newButton.Add_Click({
-            [System.Windows.Forms.MessageBox]::Show("Button clicked: " + $buttonText)
-        })
-    $form.Controls.Add($newButton)
-}
-#endregion
-
-#region Save Form Data Function
-function Save-FormData {
-    param ($filePath)
-    
-    $formData = @{
-        FormText      = $form.Text
-        FormSize      = $form.Size
-        FormBackColor = $form.BackColor
-        TabPages      = $tabControl.TabPages | ForEach-Object { $_.Text }
     }
-    
-    $formData | ConvertTo-Json | Set-Content -Path $filePath
+    for ($j = 1; $j -lt $data[0].Length; $j++) {
+        $table.Columns[$j - 1].HeaderText = $data[0][$j]
+    }
+    for ($i = 1; $i -lt $data.Length; $i++) {
+        $table.Rows[$i - 1].HeaderCell.Value = $data[$i][0]
+    }
+    $table.RowHeadersWidth = 100
 }
-#endregion
 
-# Add context menu to existing tabs
-Add-ContextMenuToTab $tabPage1
-Add-ContextMenuToTab $tabPage2
-#endregion
-#endregion 
+function Add-Chart {
+    param (
+        [System.Windows.Forms.Control]$parentControl,
+        [int]$chartWidth,
+        [int]$chartHeight,
+        [int]$chartLocationX,
+        [int]$chartLocationY
+    )
+    $chart = New-Object System.Windows.Forms.DataVisualization.Charting.Chart
+    $chart.Size = New-Object System.Drawing.Size($chartWidth, $chartHeight)
+    $chart.Location = New-Object System.Drawing.Point($chartLocationX, $chartLocationY)
+    $chartArea = New-Object System.Windows.Forms.DataVisualization.Charting.ChartArea
+    $chart.ChartAreas.Add($chartArea)
+    $parentControl.Controls.Add($chart)
+    return $chart
+}
 
-#region Show Form
-# Show the form
-# [void]$form.ShowDialog()
-#endregion
+function Set-Chart {
+    param (
+        [System.Windows.Forms.DataVisualization.Charting.Chart]$chart,
+        [array]$data
+    )
+    $chart.Series.Clear()
+    $series = New-Object System.Windows.Forms.DataVisualization.Charting.Series
+    $series.ChartType = [System.Windows.Forms.DataVisualization.Charting.SeriesChartType]::Line
+    for ($i = 0; $i -lt $data.Length; $i++) {
+        $series.Points.AddXY($data[$i][0], $data[$i][1])
+    }
+    $chart.Series.Add($series)
+}

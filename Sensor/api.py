@@ -6,6 +6,7 @@ import sys
 from fastapi import FastAPI
 import RPi.GPIO as GPIO
 import uvicorn
+from datetime import datetime  # Add this import
 
 app = FastAPI()
 stop_event = threading.Event()
@@ -14,13 +15,13 @@ def read_gpio_pins():
     GPIO.setmode(GPIO.BCM)
     pin_values = {}
     
-    for pin in range(2, 28)
+    for pin in range(2, 28):
         GPIO.setup(pin, GPIO.IN)
         pin_values[pin] = GPIO.input(pin)
     
     return pin_values
 
-def log_to_db(pin, value):
+def log_to_db(pin, value)->None:
     conn = sqlite3.connect('gpio_data.db')
     cursor = conn.cursor()
     cursor.execute(
@@ -55,13 +56,19 @@ def monitor_gpio_pins():
 
 @app.get("/gpio")
 def get_gpio_status():
-    return read_gpio_pins()
+    return {
+        "timestamp": datetime.now().isoformat(),  # Add timestamp
+        "data": read_gpio_pins()
+    }
 
 @app.get("/gpio/{pin}")
 def get_gpio_pin_status(pin: int):
     GPIO.setmode(GPIO.BCM)
     GPIO.setup(pin, GPIO.IN)
-    return {pin: GPIO.input(pin)}
+    return {
+        "timestamp": datetime.now().isoformat(),  # Add timestamp
+        "data": {pin: GPIO.input(pin)}
+    }
 
 @app.get("/gpio/{pin}/log")
 def get_gpio_pin_log(pin: int):
@@ -75,7 +82,10 @@ def get_gpio_pin_log(pin: int):
         )
     log = cursor.fetchall()
     conn.close()
-    return {pin: log}
+    return {
+        "timestamp": datetime.now().isoformat(),  # Add timestamp
+        "data": {pin: log}
+    }
 
 def start_api():
     uvicorn.run(app, host="0.0.0.0", port=8000)
