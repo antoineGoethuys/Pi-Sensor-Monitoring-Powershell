@@ -2,37 +2,54 @@
 
 function Sync-Data {
     param(
+        [ValidateNotNullOrEmpty()]
         [int32]$Pi,
+        
+        [ValidateNotNullOrEmpty()]
         [string]$IP,
+        
+        [ValidateNotNullOrEmpty()]
         [string]$port
     )
-    $data = Get-SensorData -IP $IP -port $port
-    # $data.timestamp | Out-GridView
-    # $data.data | Out-GridView
-
-    foreach ($row in $data.data) {
-        foreach ($property in $row.psobject.Properties) {
-            # Write-Output "$($pro perty.Name) = $($property.Value)"
-            Add-SensorData -pi $Pi -pin $property.Name -timestamp $data.timestamp -value_data $property.Value
-            # Add-SensorData -pi $Pi -pin $property.Name -timestamp $data.timestamp -value_data $property.Value
+    try {
+        $data = Get-SensorData -IP $IP -port $port
+        if (-not $data) {
+            throw "Failed to retrieve sensor data."
         }
+
+        foreach ($row in $data.data) {
+            foreach ($property in $row.psobject.Properties) {
+                Add-SensorData -pi $Pi -pin $property.Name -timestamp $data.timestamp -value_data $property.Value
+            }
+        }
+    }
+    catch {
+        Write-Error "Failed to sync data: $_"
     }
 }
 
 function Start-Sync-Data {
     param(
+        [ValidateNotNullOrEmpty()]
         [int32]$Pi,
+        
+        [ValidateNotNullOrEmpty()]
         [string]$IP,
+        
+        [ValidateNotNullOrEmpty()]
         [string]$port
     )
-    Clear-Database
-    while ($true) {
-        Sync-Data -Pi $Pi -IP $IP -port $port
-        Start-Sleep -Seconds 5
+    try {
+        Clear-Database
+        while ($true) {
+            Sync-Data -Pi $Pi -IP $IP -port $port
+            Start-Sleep -Seconds 5
+        }
     }
-    
+    catch {
+        Write-Error "Failed to start data sync: $_"
+    }
 }
-
 
 # test function
 # Get-SensorDataOfPinLog -IP "10.0.0.254" -port "8000" -pin "20"
