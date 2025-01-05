@@ -6,20 +6,29 @@ Add-Type -AssemblyName System.Windows.Forms.DataVisualization
 
 function Set-Form {
     param (
+        [ValidateNotNullOrEmpty()]
         [string]$formText,
+        
+        [ValidateRange(100, 2000)]
         [int]$formWidth,
+        
+        [ValidateRange(100, 2000)]
         [int]$formHeight
     )
-    $form = New-Object System.Windows.Forms.Form
-    $form.Text = $formText
-    $form.Size = New-Object System.Drawing.Size($formWidth, $formHeight)
-    $form.FormBorderStyle = [System.Windows.Forms.FormBorderStyle]::FixedDialog
-    $form.MaximizeBox = $false
-    $form.MinimizeBox = $false
-    # $form.WindowState = "Maximized"
-    $form.StartPosition = "CenterScreen"
-    $form.AutoScroll = $true
-    return $form
+    try {
+        $form = New-Object System.Windows.Forms.Form
+        $form.Text = $formText
+        $form.Size = New-Object System.Drawing.Size($formWidth, $formHeight)
+        $form.FormBorderStyle = [System.Windows.Forms.FormBorderStyle]::FixedDialog
+        $form.MaximizeBox = $false
+        $form.MinimizeBox = $false
+        $form.StartPosition = "CenterScreen"
+        $form.AutoScroll = $true
+        return $form
+    }
+    catch {
+        Write-Error "Failed to create form: $_"
+    }
 }
 
 function Add-tabPage {
@@ -52,19 +61,29 @@ function Add-TabControl {
 function Add-Button {
     param (
         [System.Windows.Forms.Control]$parentControl,
+        
+        [ValidateNotNullOrEmpty()]
         [string]$buttonText,
+        
         [int]$buttonLocationX,
         [int]$buttonLocationY,
+        
         [int]$buttonWidth = 100,
         [int]$buttonHeight = 30
     )
-    $button = New-Object System.Windows.Forms.Button
-    $button.Text = $buttonText
-    $button.Location = New-Object System.Drawing.Point($buttonLocationX, $buttonLocationY)
-    $button.Size = New-Object System.Drawing.Size($buttonWidth, $buttonHeight)
-    $parentControl.Controls.Add($button)
-    return $button
+    try {
+        $button = New-Object System.Windows.Forms.Button
+        $button.Text = $buttonText
+        $button.Location = New-Object System.Drawing.Point($buttonLocationX, $buttonLocationY)
+        $button.Size = New-Object System.Drawing.Size($buttonWidth, $buttonHeight)
+        $parentControl.Controls.Add($button)
+        return $button
+    }
+    catch {
+        Write-Error "Failed to add button: $_"
+    }
 }
+
 function Add-Table {
     param (
         [System.Windows.Forms.Control]$parentControl,
@@ -109,6 +128,24 @@ function Set-Table {
     $table.RowHeadersWidth = 100
 }
 
+# Function to check values and notify
+function Test-ValuesAndNotify {
+    param (
+        [int]$pi,
+        [string]$pin,
+        [datetime]$startTime,
+        [datetime]$endTime
+    )
+    $dataDB = Get-PiPinSqliteDataLastOfAllPins -pi $pi
+    foreach ($data in $dataDB) {
+        if ($data.pin -eq $pin -and $data.timestamp -ge $startTime -and $data.timestamp -le $endTime) {
+            if ($data.value_data -ne "0") {
+                # Replace "expected_value" with the correct condition
+                [System.Windows.Forms.MessageBox]::Show("Incorrect value detected for Pi $pi, Pin $pin at $($data.timestamp)")
+            }
+        }
+    }
+}
 function Add-Chart {
     param (
         [System.Windows.Forms.Control]$parentControl,

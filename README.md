@@ -88,7 +88,7 @@ GET /gpio/{pin}/log
 
 ## Core Tasks
 - [x] Store sensor data in SQLite database
-- [ ] Develop a real-time monitoring dashboard
+- [x] Develop a real-time monitoring dashboard
 - [ ] Set up notifications for abnormal sensor values
 - [ ] Create configuration pages:
   - [ ] Raspberry Pi settings (network config, naming)
