@@ -17,6 +17,13 @@ all the electronic parts:
 - Breadboard
 
 ![alt text](image-1.png)
+
+---
+# view screens
+
+![alt text](image-2.png)
+![alt text](image-3.png)
+![alt text](image-4.png)
 ---
 # Setup
 ## for setup the client part
