@@ -20,6 +20,10 @@ $creatQuerry =
 #endregion
 
 #region Database
+<#
+.SYNOPSIS
+    Clears the database by dropping the SENSOR table if it exists and creating a new one.
+#>
 function Clear-Database {
     try {
         Invoke-SqliteQuery -Query "DROP TABLE IF EXISTS SENSOR" -SQLiteConnection $conn
@@ -30,6 +34,18 @@ function Clear-Database {
     }
 }
 
+<#
+.SYNOPSIS
+    Adds sensor data to the database.
+.PARAMETER pi
+    The Pi identifier.
+.PARAMETER pin
+    The pin identifier.
+.PARAMETER timestamp
+    The timestamp of the data.
+.PARAMETER value_data
+    The value of the data.
+#>
 function Add-SensorData {
     param (
         [ValidateNotNullOrEmpty()]
@@ -53,6 +69,10 @@ function Add-SensorData {
     }
 }
 
+<#
+.SYNOPSIS
+    Retrieves all data from the SENSOR table.
+#>
 function Get-AllSqliteData {
     try {
         $query = "SELECT * FROM SENSOR"
@@ -64,6 +84,12 @@ function Get-AllSqliteData {
     }
 }
 
+<#
+.SYNOPSIS
+    Retrieves data from the SENSOR table for a specific Pi.
+.PARAMETER pi
+    The Pi identifier.
+#>
 function Get-PiSqliteData {
     param (
         [ValidateNotNullOrEmpty()]
@@ -79,6 +105,14 @@ function Get-PiSqliteData {
     }
 }
 
+<#
+.SYNOPSIS
+    Retrieves data from the SENSOR table for a specific Pi and pin.
+.PARAMETER pi
+    The Pi identifier.
+.PARAMETER pin
+    The pin identifier.
+#>
 function Get-PiPinSqliteData {
     param (
         [ValidateNotNullOrEmpty()]
@@ -97,6 +131,12 @@ function Get-PiPinSqliteData {
     }
 }
 
+<#
+.SYNOPSIS
+    Retrieves the last data entries for all pins of a specific Pi.
+.PARAMETER pi
+    The Pi identifier.
+#>
 function Get-PiPinSqliteDataLastOfAllPins {
     param (
         [ValidateNotNullOrEmpty()]

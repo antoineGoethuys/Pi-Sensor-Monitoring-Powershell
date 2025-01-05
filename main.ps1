@@ -8,6 +8,10 @@
 $config = Get-Content "$PSScriptRoot/ipConfig.json" | ConvertFrom-Json
 
 #region GUI
+<#
+.SYNOPSIS
+    Starts the main screen for the Pi-Sensor-Monitoring-Powershell application.
+#>
 function Start-Screen {
     $form = Set-Form -formText "Pi-Sensor-Monitoring-Powershell" -formWidth 800 -formHeight 900
 

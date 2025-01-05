@@ -12,6 +12,12 @@ app = FastAPI()
 stop_event = threading.Event()
 
 def read_gpio_pins():
+    """
+    Reads the status of GPIO pins.
+
+    Returns:
+        dict: A dictionary with pin numbers as keys and their status (HIGH/LOW) as values.
+    """
     GPIO.setmode(GPIO.BCM)
     pin_values = {}
     
@@ -21,7 +27,14 @@ def read_gpio_pins():
     
     return pin_values
 
-def log_to_db(pin, value)->None:
+def log_to_db(pin, value) -> None:
+    """
+    Logs the status of a GPIO pin to the database.
+
+    Args:
+        pin (int): The GPIO pin number.
+        value (int): The status of the pin (HIGH/LOW).
+    """
     conn = sqlite3.connect('gpio_data.db')
     cursor = conn.cursor()
     cursor.execute(
@@ -29,18 +42,21 @@ def log_to_db(pin, value)->None:
         CREATE TABLE IF NOT EXISTS gpio_log
         (timestamp TEXT, pin INTEGER, value TEXT)
         '''
-        )
+    )
     cursor.execute(
         '''
         INSERT INTO gpio_log (timestamp, pin, value)
         VALUES (datetime('now'), ?, ?)
         ''',
         (pin, 'HIGH' if value else 'LOW')
-        )
+    )
     conn.commit()
     conn.close()
 
 def monitor_gpio_pins():
+    """
+    Monitors the GPIO pins for changes and logs them to the database.
+    """
     previous_values = read_gpio_pins()
     try:
         while not stop_event.is_set():
@@ -56,6 +72,12 @@ def monitor_gpio_pins():
 
 @app.get("/gpio")
 def get_gpio_status():
+    """
+    Retrieves the status of all GPIO pins.
+
+    Returns:
+        dict: A dictionary with the current timestamp and the status of all GPIO pins.
+    """
     return {
         "timestamp": datetime.now().isoformat(),  # Add timestamp
         "data": read_gpio_pins()
@@ -63,6 +85,15 @@ def get_gpio_status():
 
 @app.get("/gpio/{pin}")
 def get_gpio_pin_status(pin: int):
+    """
+    Retrieves the status of a specific GPIO pin.
+
+    Args:
+        pin (int): The GPIO pin number.
+
+    Returns:
+        dict: A dictionary with the current timestamp and the status of the specified GPIO pin.
+    """
     GPIO.setmode(GPIO.BCM)
     GPIO.setup(pin, GPIO.IN)
     return {
@@ -72,6 +103,15 @@ def get_gpio_pin_status(pin: int):
 
 @app.get("/gpio/{pin}/log")
 def get_gpio_pin_log(pin: int):
+    """
+    Retrieves the log data of a specific GPIO pin.
+
+    Args:
+        pin (int): The GPIO pin number.
+
+    Returns:
+        dict: A dictionary with the current timestamp and the log data of the specified GPIO pin.
+    """
     conn = sqlite3.connect('gpio_data.db')
     cursor = conn.cursor()
     cursor.execute(
@@ -79,7 +119,7 @@ def get_gpio_pin_log(pin: int):
         SELECT timestamp, value FROM gpio_log WHERE pin = ? ORDER BY timestamp
         ''',
         (pin,)
-        )
+    )
     log = cursor.fetchall()
     conn.close()
     return {
@@ -88,9 +128,19 @@ def get_gpio_pin_log(pin: int):
     }
 
 def start_api():
+    """
+    Starts the FastAPI server.
+    """
     uvicorn.run(app, host="0.0.0.0", port=8000)
 
 def signal_handler(sig, frame):
+    """
+    Handles the SIGINT signal to gracefully shut down the application.
+
+    Args:
+        sig (int): The signal number.
+        frame (frame object): The current stack frame.
+    """
     print("KeyboardInterrupt detected, shutting down...")
     stop_event.set()
     GPIO.cleanup()

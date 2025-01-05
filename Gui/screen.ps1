@@ -4,6 +4,16 @@ Add-Type -AssemblyName System.Drawing
 Add-Type -AssemblyName System.Windows.Forms.DataVisualization
 #endregion
 
+<#
+.SYNOPSIS
+    Creates and sets up a new Windows Form.
+.PARAMETER formText
+    The text to display in the form's title bar.
+.PARAMETER formWidth
+    The width of the form.
+.PARAMETER formHeight
+    The height of the form.
+#>
 function Set-Form {
     param (
         [ValidateNotNullOrEmpty()]
@@ -34,6 +44,14 @@ function Set-Form {
     }
 }
 
+<#
+.SYNOPSIS
+    Adds a new tab page to a TabControl.
+.PARAMETER tabControl
+    The TabControl to add the tab page to.
+.PARAMETER tabText
+    The text to display on the tab page.
+#>
 function Add-tabPage {
     param (
         [System.Windows.Forms.TabControl]$tabControl,
@@ -58,6 +76,20 @@ function Add-tabPage {
     }
 }
 
+<#
+.SYNOPSIS
+    Adds a new TabControl to a parent control.
+.PARAMETER parentControl
+    The parent control to add the TabControl to.
+.PARAMETER tabControlWidth
+    The width of the TabControl.
+.PARAMETER tabControlHeight
+    The height of the TabControl.
+.PARAMETER tabControlLocationX
+    The X location of the TabControl.
+.PARAMETER tabControlLocationY
+    The Y location of the TabControl.
+#>
 function Add-TabControl {
     param (
         [System.Windows.Forms.Control]$parentControl,
@@ -81,6 +113,22 @@ function Add-TabControl {
     }
 }
 
+<#
+.SYNOPSIS
+    Adds a new button to a parent control.
+.PARAMETER parentControl
+    The parent control to add the button to.
+.PARAMETER buttonText
+    The text to display on the button.
+.PARAMETER buttonLocationX
+    The X location of the button.
+.PARAMETER buttonLocationY
+    The Y location of the button.
+.PARAMETER buttonWidth
+    The width of the button. Default is 100.
+.PARAMETER buttonHeight
+    The height of the button. Default is 30.
+#>
 function Add-Button {
     param (
         [System.Windows.Forms.Control]$parentControl,
@@ -113,6 +161,20 @@ function Add-Button {
     }
 }
 
+<#
+.SYNOPSIS
+    Adds a new DataGridView table to a parent control.
+.PARAMETER parentControl
+    The parent control to add the table to.
+.PARAMETER tableWidth
+    The width of the table.
+.PARAMETER tableHeight
+    The height of the table.
+.PARAMETER tableLocationX
+    The X location of the table.
+.PARAMETER tableLocationY
+    The Y location of the table.
+#>
 function Add-Table {
     param (
         [System.Windows.Forms.Control]$parentControl,
@@ -136,6 +198,16 @@ function Add-Table {
     }
 }
 
+<#
+.SYNOPSIS
+    Sets the data and appearance of a DataGridView table.
+.PARAMETER table
+    The DataGridView table to set.
+.PARAMETER data
+    The data to populate the table with.
+.PARAMETER highlightPin
+    The pin to highlight in the table.
+#>
 function Set-Table {
     param (
         [System.Windows.Forms.DataGridView]$table,
@@ -177,6 +249,18 @@ function Set-Table {
     }
 }
 
+<#
+.SYNOPSIS
+    Tests values and notifies if incorrect values are detected.
+.PARAMETER pi
+    The Pi identifier.
+.PARAMETER pin
+    The pin to test.
+.PARAMETER startTime
+    The start time for the test.
+.PARAMETER endTime
+    The end time for the test.
+#>
 function Test-ValuesAndNotify {
     param (
         [int]$pi,
@@ -212,6 +296,20 @@ function Test-ValuesAndNotify {
     }
 }
 
+<#
+.SYNOPSIS
+    Adds a new chart to a parent control.
+.PARAMETER parentControl
+    The parent control to add the chart to.
+.PARAMETER chartWidth
+    The width of the chart.
+.PARAMETER chartHeight
+    The height of the chart.
+.PARAMETER chartLocationX
+    The X location of the chart.
+.PARAMETER chartLocationY
+    The Y location of the chart.
+#>
 function Add-Chart {
     param (
         [System.Windows.Forms.Control]$parentControl,
@@ -237,6 +335,14 @@ function Add-Chart {
     }
 }
 
+<#
+.SYNOPSIS
+    Sets the data and appearance of a chart.
+.PARAMETER chart
+    The chart to set.
+.PARAMETER data
+    The data to populate the chart with.
+#>
 function Set-Chart {
     param (
         [System.Windows.Forms.DataVisualization.Charting.Chart]$chart,

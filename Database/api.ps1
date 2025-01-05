@@ -1,3 +1,13 @@
+<#
+.SYNOPSIS
+    Retrieves the log data of a specific pin from the sensor.
+.PARAMETER IP
+    The IP address of the Pi.
+.PARAMETER port
+    The port to connect to for retrieving sensor data.
+.PARAMETER pin
+    The pin identifier.
+#>
 function Get-SensorDataOfPinLog {
     param(
         [ValidateNotNullOrEmpty()]
@@ -19,6 +29,16 @@ function Get-SensorDataOfPinLog {
     }
 }
 
+<#
+.SYNOPSIS
+    Retrieves the status data of a specific pin from the sensor.
+.PARAMETER IP
+    The IP address of the Pi.
+.PARAMETER port
+    The port to connect to for retrieving sensor data.
+.PARAMETER pin
+    The pin identifier.
+#>
 function Get-SensorDataOfPinStatus {
     param(
         [ValidateNotNullOrEmpty()]
@@ -40,6 +60,14 @@ function Get-SensorDataOfPinStatus {
     }
 }
 
+<#
+.SYNOPSIS
+    Retrieves all sensor data from the Pi.
+.PARAMETER IP
+    The IP address of the Pi.
+.PARAMETER port
+    The port to connect to for retrieving sensor data.
+#>
 function Get-SensorData {
     param(
         [ValidateNotNullOrEmpty()]

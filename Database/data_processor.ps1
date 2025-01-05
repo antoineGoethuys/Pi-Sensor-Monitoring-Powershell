@@ -1,5 +1,15 @@
 . "$PSScriptRoot/database.ps1"
 
+<#
+.SYNOPSIS
+    Synchronizes sensor data from a specified Pi.
+.PARAMETER Pi
+    The Pi identifier.
+.PARAMETER IP
+    The IP address of the Pi.
+.PARAMETER port
+    The port to connect to for retrieving sensor data.
+#>
 function Sync-Data {
     param(
         [ValidateNotNullOrEmpty()]
@@ -28,6 +38,16 @@ function Sync-Data {
     }
 }
 
+<#
+.SYNOPSIS
+    Starts continuous synchronization of sensor data from a specified Pi.
+.PARAMETER Pi
+    The Pi identifier.
+.PARAMETER IP
+    The IP address of the Pi.
+.PARAMETER port
+    The port to connect to for retrieving sensor data.
+#>
 function Start-Sync-Data {
     param(
         [ValidateNotNullOrEmpty()]
