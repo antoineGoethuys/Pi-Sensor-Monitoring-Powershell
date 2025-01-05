@@ -95,7 +95,7 @@ function Set-Table {
     for ($i = 1; $i -lt $data.Length; $i++) {
         $row = $table.Rows.Add()
         for ($j = 1; $j -lt $data[$i].Length; $j++) {
-            if ($table.Rows[$row].Cells[$j - 1] -ne $null) {
+            if ($null -ne $table.Rows[$row].Cells[$j - 1]) {
                 $table.Rows[$row].Cells[$j - 1].Value = $data[$i][$j]
             }
         }

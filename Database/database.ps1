@@ -81,6 +81,9 @@ function Get-PiPinSqliteDataLastOfAllPins {
     )
     $query = "SELECT * FROM SENSOR WHERE pi = $pi ORDER BY id DESC LIMIT 26"
     $response = Invoke-SqliteQuery -Query $query -SQLiteConnection $conn
+    if ($response.Count -eq 0) {
+        return ""
+    }
     return $response
 }
 # test function
